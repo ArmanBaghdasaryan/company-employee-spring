@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="/add/employee">Add employee</a>
+
+<table border="1px">
+    <tr>
+        <th>id</th>
+        <th>picture</th>
+        <th>name</th>
+        <th>surname</th>
+        <th>email</th>
+        <th>phone number</th>
+        <th>salary</th>
+        <th>position</th>
+        <th>company</th>
+        <th>Remove</th>
+    </tr>
+
+    <tr th:each="employees:${employee}">
+        <td th:text="${employees.id}"></td>
+        <td>
+            <img th:if="${employees.profilePic != null}"
+                 th:src="@{/employee/getImage(fileName=${employees.profilePic})}" width="100">
+            <img th:if="${employees.profilePic == null}" src="/images/thumbb.jpg" width="100">
+        </td>
+        <td th:text="${employees.name}"></td>
+        <td th:text="${employees.surname}"></td>
+        <td th:text="${employees.email}"></td>
+        <td th:text="${employees.phoneNumber}"></td>
+        <td th:text="${employees.surname}"></td>
+        <td th:text="${employees.position}"></td>
+        <td th:text="${employees.company.name}"></td>
+        <td>
+            <a th:href="@{/employee/delete(byId=${employees.id})}">Remove</a>
+        </td>
+
+
+    </tr>
+</table>
+
+
+</body>
+</html>
