@@ -5,7 +5,8 @@
     <title>Title</title>
 </head>
 <body>
-<a href="/add/employee">Add employee</a>
+<a href="/add/employee">Add employee</a> |
+<a href="/">Home</a>
 
 <table border="1px">
     <tr>
@@ -19,6 +20,7 @@
         <th>position</th>
         <th>company</th>
         <th>Remove</th>
+<!--        <th>Edit</th>-->
     </tr>
 
     <tr th:each="employees:${employee}">
@@ -38,6 +40,9 @@
         <td>
             <a th:href="@{/employee/delete(byId=${employees.id})}">Remove</a>
         </td>
+<!--        <td>-->
+<!--            <a th:href="@{/employee/edit(employeeId=${employees.id})}">Edit</a>-->
+<!--        </td>-->
 
 
     </tr>

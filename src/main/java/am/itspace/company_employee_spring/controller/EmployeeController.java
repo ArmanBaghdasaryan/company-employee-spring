@@ -2,8 +2,8 @@ package am.itspace.company_employee_spring.controller;
 
 import am.itspace.company_employee_spring.entity.Company;
 import am.itspace.company_employee_spring.entity.Employee;
-import am.itspace.company_employee_spring.repository.CompanyRepo;
-import am.itspace.company_employee_spring.repository.EmployeeRepo;
+import am.itspace.company_employee_spring.repository.CompanyRepository;
+import am.itspace.company_employee_spring.repository.EmployeeRepository;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,9 +26,9 @@ public class EmployeeController {
     @Value("${task.management.images.folder}")
     private String folderPath;
     @Autowired
-    private CompanyRepo companyRepo;
+    private CompanyRepository companyRepo;
     @Autowired
-    private EmployeeRepo employeeRepo;
+    private EmployeeRepository employeeRepo;
 
     @GetMapping("/add/employee")
     public String addEmployee(ModelMap model) {
@@ -46,13 +46,13 @@ public class EmployeeController {
             file.transferTo(newFile);
             employee.setProfilePic(fileName);
         }
-
         Optional<Company> byId = companyRepo.findById(employee.getCompany().getId());
+        if (byId.isPresent()) {
+            Company company = byId.get();
+            company.setSize(company.getSize() + 1);
+            companyRepo.save(company);
+        }
         employeeRepo.save(employee);
-        Company company = byId.get();
-        company.setSize(company.getSize() + 1);
-
-        companyRepo.save(company);
         return "redirect:/employee";
     }
 
@@ -72,16 +72,41 @@ public class EmployeeController {
 
     @GetMapping("/employee/delete")
     public String delete(@RequestParam("byId") int id) {
-
-
         Optional<Employee> empById = employeeRepo.findById(id);
-        Employee employee = empById.get();
-        Optional<Company> byId = companyRepo.findById(employee.getCompany().getId());
+        if (empById.isPresent()) {
+            Employee employee = empById.get();
+            Optional<Company> byId = companyRepo.findById(employee.getCompany().getId());
+            if (byId.isPresent()) {
+                Company company = byId.get();
+                company.setSize(company.getSize() - 1);
+                companyRepo.save(company);
+            }
+        }
         employeeRepo.deleteById(id);
-        Company company = byId.get();
-        company.setSize(company.getSize() - 1);
-        companyRepo.save(company);
         return "redirect:/employee";
     }
 
+
+
+
+
+
+
 }
+//    @GetMapping("/employee/edit")
+//    public String editEmployee(ModelMap model) {
+//        List<Employee> employees = employeeRepo.findAll();
+//        model.addAttribute("employees", employees);
+//        return "employee";
+//    }
+//
+//    @PostMapping("/employee/edit")
+//    public String edit(@RequestParam("employeeId") int employeeId) {
+//        Optional<Employee> byId = employeeRepo.findById(employeeId);
+//        if (byId.isPresent()) {
+//            Employee employee = byId.get();
+//            employeeRepo.save(employee);
+//        }
+//
+//        return "redirect:/employee";
+//    }

@@ -2,6 +2,9 @@ package am.itspace.company_employee_spring;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class CompanyEmployeeSpringApplication {
@@ -9,5 +12,11 @@ public class CompanyEmployeeSpringApplication {
     public static void main(String[] args) {
         SpringApplication.run(CompanyEmployeeSpringApplication.class, args);
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 
 }

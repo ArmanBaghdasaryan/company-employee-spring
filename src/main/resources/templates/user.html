@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="/add/user">Add User</a> |
+<a href="/">Home</a>
+
+<table border="1px">
+    <tr>
+        <th>id</th>
+        <th>picture</th>
+        <th>name</th>
+        <th>surname</th>
+        <th>email</th>
+        <th>Role</th>
+        <th>Remove</th>
+        <!--        <th>Edit</th>-->
+    </tr>
+
+    <tr th:each="user:${users}">
+        <td th:text="${user.id}"></td>
+        <td>
+            <img th:if="${user.picture != null}"
+                 th:src="@{/user/getImage(fileName=${user.picture})}" width="100">
+            <img th:if="${user.picture == null}" src="/images/thumbb.jpg" width="100">
+        </td>
+        <td th:text="${user.name}"></td>
+        <td th:text="${user.surname}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.role}"></td>
+        <td>
+            <a th:href="@{/user/delete(byId=${user.id})}">Remove</a>
+        </td>
+        <!--        <td>-->
+        <!--            <a th:href="@{/employee/edit(employeeId=${employees.id})}">Edit</a>-->
+        <!--        </td>-->
+
+
+    </tr>
+</table>
+
+
+</body>
+</html>
