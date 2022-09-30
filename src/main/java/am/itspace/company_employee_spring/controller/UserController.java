@@ -27,7 +27,7 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("${task.management.images.folder}")
+    @Value("${company.employee.images.folder}")
     private String folderPath;
 
     @GetMapping("/add/user")

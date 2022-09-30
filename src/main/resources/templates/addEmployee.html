@@ -17,7 +17,7 @@
     <label for="profPic">Employee Image</label>
     <input type="file" name="profPic" id="profPic" >
     <label>
-        <select name="company.id">
+        <select name="company">
             <option th:each="company: ${companies}" th:text="${company.name}" th:value="${company.id}"></option>
         </select>
     </label>

@@ -23,7 +23,7 @@ import java.util.Optional;
 @Controller
 public class EmployeeController {
 
-    @Value("${task.management.images.folder}")
+    @Value("${company.employee.images.folder}")
     private String folderPath;
     @Autowired
     private CompanyRepository companyRepo;
@@ -46,12 +46,7 @@ public class EmployeeController {
             file.transferTo(newFile);
             employee.setProfilePic(fileName);
         }
-        Optional<Company> byId = companyRepo.findById(employee.getCompany().getId());
-        if (byId.isPresent()) {
-            Company company = byId.get();
-            company.setSize(company.getSize() + 1);
-            companyRepo.save(company);
-        }
+        employee.getCompany().setSize(employee.getCompany().getSize() + 1);
         employeeRepo.save(employee);
         return "redirect:/employee";
     }
@@ -86,27 +81,4 @@ public class EmployeeController {
         return "redirect:/employee";
     }
 
-
-
-
-
-
-
 }
-//    @GetMapping("/employee/edit")
-//    public String editEmployee(ModelMap model) {
-//        List<Employee> employees = employeeRepo.findAll();
-//        model.addAttribute("employees", employees);
-//        return "employee";
-//    }
-//
-//    @PostMapping("/employee/edit")
-//    public String edit(@RequestParam("employeeId") int employeeId) {
-//        Optional<Employee> byId = employeeRepo.findById(employeeId);
-//        if (byId.isPresent()) {
-//            Employee employee = byId.get();
-//            employeeRepo.save(employee);
-//        }
-//
-//        return "redirect:/employee";
-//    }

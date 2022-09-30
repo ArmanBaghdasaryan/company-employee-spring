@@ -31,9 +31,11 @@
         <td th:text="${user.surname}"></td>
         <td th:text="${user.email}"></td>
         <td th:text="${user.role}"></td>
-        <td>
-            <a th:href="@{/user/delete(byId=${user.id})}">Remove</a>
-        </td>
+        <th:block th:if="${currentUser != null}">
+            <td>
+                <a th:href="@{/user/delete(byId=${user.id})}">Remove</a>
+            </td>
+        </th:block>
         <!--        <td>-->
         <!--            <a th:href="@{/employee/edit(employeeId=${employees.id})}">Edit</a>-->
         <!--        </td>-->
