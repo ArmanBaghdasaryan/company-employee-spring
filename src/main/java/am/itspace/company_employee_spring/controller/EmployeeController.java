@@ -79,6 +79,7 @@ public class EmployeeController {
         }
         employeeRepo.deleteById(id);
         return "redirect:/employee";
+
     }
 
 }

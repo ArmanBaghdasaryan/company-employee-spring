@@ -11,11 +11,11 @@
     <input type="text" name="name" placeholder="please input name">
     <input type="text" name="surname" placeholder="please input surname">
     <input type="email" name="email" placeholder="please input email">
+    <span style="color: red" th:if="${msgEmail != null}" th:text="${msgEmail}"></span>
     <input type="password" name="password" placeholder="please input password"><br>
-
-    <label for="profPic">Employee Image</label>
-    <input type="file" name="profPic" id="profPic">
-
+    <label for="profPic">User Image</label>
+    <input type="file" name="profPic" id="profPic" accept="image/*">
+    <span style="color: red" th:if="${msgFile != null}" th:text="${msgFile}"></span>
     <input type="submit" value="add user">
 
 </form>

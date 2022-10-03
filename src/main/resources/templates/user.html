@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Users</title>
 </head>
 <body>
 <a href="/add/user">Add User</a> |
@@ -31,7 +31,7 @@
         <td th:text="${user.surname}"></td>
         <td th:text="${user.email}"></td>
         <td th:text="${user.role}"></td>
-        <th:block th:if="${currentUser != null}">
+        <th:block th:if="${currentUser != null && currentUser.role.name == 'ADMIN'}">
             <td>
                 <a th:href="@{/user/delete(byId=${user.id})}">Remove</a>
             </td>

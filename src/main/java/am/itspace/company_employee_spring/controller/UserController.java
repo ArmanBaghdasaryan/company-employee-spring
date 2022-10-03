@@ -1,5 +1,6 @@
 package am.itspace.company_employee_spring.controller;
 
+import am.itspace.company_employee_spring.dto.CreateUserDto;
 import am.itspace.company_employee_spring.entity.Role;
 import am.itspace.company_employee_spring.entity.User;
 import am.itspace.company_employee_spring.repository.UserRepository;
@@ -18,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -31,32 +33,40 @@ public class UserController {
     private String folderPath;
 
     @GetMapping("/add/user")
-    public String addEmployee(ModelMap model) {
+    public String addUser(ModelMap model) {
         List<User> users = userRepo.findAll();
         model.addAttribute("users", users);
         return "addUser";
     }
 
     @PostMapping("/add/user")
-    public String addEmployee(@ModelAttribute User user,
-                              @RequestParam("profPic") MultipartFile file) throws IOException {
-        if (!file.isEmpty() && file.getSize() > 0) {
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            File newFile = new File(folderPath + File.separator + fileName);
-            file.transferTo(newFile);
-            user.setPicture(fileName);
+    public String addUser(@ModelAttribute CreateUserDto dto,
+                          @RequestParam("profPic") MultipartFile file,
+                          ModelMap modelMap) throws IOException {
+
+        if (userRepo.existsByEmailIgnoreCase(dto.getEmail())) {
+            modelMap.addAttribute("msgEmail", "Email already in use");
+            return "addUser";
+        } else {
+            User user = createUser(dto);
+            if (!file.isEmpty() && file.getSize() > 0) {
+                if (file.getContentType() != null && !file.getContentType().contains("image")) {
+                    modelMap.addAttribute("msgFile", "Please choose only image");
+                    return "addUser";
+                }
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                File newFile = new File(folderPath + File.separator + fileName);
+                file.transferTo(newFile);
+                user.setPicture(fileName);
+            }
+            userRepo.save(user);
+            return "redirect:/user";
         }
-        if (user.getRole() == null) {
-            user.setRole(Role.USER);
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepo.save(user);
-        return "redirect:/user";
+
     }
 
-
     @GetMapping("/user")
-    public String employee(ModelMap modelMap) {
+    public String user(ModelMap modelMap) {
         List<User> all = userRepo.findAll();
         modelMap.addAttribute("users", all);
         return "user";
@@ -74,6 +84,15 @@ public class UserController {
 
         userRepo.deleteById(id);
         return "redirect:/user";
+    }
+    private User createUser(CreateUserDto dto) {
+        return User.builder()
+                .name(dto.getName())
+                .surname(dto.getSurname())
+                .email(dto.getEmail())
+                .password(passwordEncoder.encode(dto.getPassword()))
+                .role(Role.USER)
+                .build();
     }
 
 }

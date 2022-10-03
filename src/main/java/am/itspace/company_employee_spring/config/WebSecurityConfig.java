@@ -23,13 +23,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .formLogin()
+                .loginPage("/loginPage")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .loginProcessingUrl("/login")
+                .failureUrl("/loginPage?error=true")
+                .defaultSuccessUrl("/loginSuccess")
                 .and()
                 .logout()
+                .logoutSuccessUrl("/")
                 .and()
                 .authorizeRequests()
                 .antMatchers("/user/delete").authenticated()
                 .antMatchers("/add/employee").hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
                 .antMatchers("/add/company").hasAuthority(Role.ADMIN.name())
+                .antMatchers("/admin/home").hasAuthority(Role.ADMIN.name())
+                .antMatchers("/user/home").hasAuthority(Role.USER.name())
                 .anyRequest().permitAll();
 
     }
