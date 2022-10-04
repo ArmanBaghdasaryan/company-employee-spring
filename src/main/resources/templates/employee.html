@@ -6,8 +6,12 @@
 </head>
 <body>
 <a href="/add/employee">Add employee</a> |
-<a href="/">Home</a>
-
+<th:block th:if="${currentUser.role.name == 'ADMIN'}">
+<a href="/admin/home">Home</a>
+</th:block>
+<th:block th:if="${currentUser.role.name == 'USER'}">
+<a href="/user/home">Home</a>
+</th:block>
 <table border="1px">
     <tr>
         <th>id</th>

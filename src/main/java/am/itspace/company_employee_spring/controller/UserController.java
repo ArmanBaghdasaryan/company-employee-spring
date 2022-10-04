@@ -19,7 +19,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -32,6 +31,12 @@ public class UserController {
     @Value("${company.employee.images.folder}")
     private String folderPath;
 
+
+    @GetMapping("/user/home")
+    public String userPage() {
+        return "userPage";
+    }
+
     @GetMapping("/add/user")
     public String addUser(ModelMap model) {
         List<User> users = userRepo.findAll();
@@ -43,7 +48,6 @@ public class UserController {
     public String addUser(@ModelAttribute CreateUserDto dto,
                           @RequestParam("profPic") MultipartFile file,
                           ModelMap modelMap) throws IOException {
-
         if (userRepo.existsByEmailIgnoreCase(dto.getEmail())) {
             modelMap.addAttribute("msgEmail", "Email already in use");
             return "addUser";
@@ -85,6 +89,7 @@ public class UserController {
         userRepo.deleteById(id);
         return "redirect:/user";
     }
+
     private User createUser(CreateUserDto dto) {
         return User.builder()
                 .name(dto.getName())
