@@ -1,83 +1,76 @@
 package am.itspace.company_employee_spring.controller;
 
+import am.itspace.company_employee_spring.dto.CreateEmployeeDto;
 import am.itspace.company_employee_spring.entity.Company;
 import am.itspace.company_employee_spring.entity.Employee;
-import am.itspace.company_employee_spring.repository.CompanyRepository;
-import am.itspace.company_employee_spring.repository.EmployeeRepository;
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import am.itspace.company_employee_spring.service.CompanyService;
+import am.itspace.company_employee_spring.service.EmployeeService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
+@RequiredArgsConstructor
 public class EmployeeController {
 
-    @Value("${company.employee.images.folder}")
-    private String folderPath;
-    @Autowired
-    private CompanyRepository companyRepo;
-    @Autowired
-    private EmployeeRepository employeeRepo;
+
+    private final EmployeeService employeeService;
+    private final CompanyService companyService;
 
     @GetMapping("/add/employee")
     public String addEmployee(ModelMap model) {
-        List<Company> companies = companyRepo.findAll();
+        List<Company> companies = companyService.findAllCompanies();
         model.addAttribute("companies", companies);
         return "addEmployee";
     }
 
     @PostMapping("/add/employee")
-    public String addEmployee(@ModelAttribute Employee employee,
+    public String addEmployee(@ModelAttribute CreateEmployeeDto employee,
                               @RequestParam("profPic") MultipartFile file) throws IOException {
-        if (!file.isEmpty() && file.getSize() > 0) {
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            File newFile = new File(folderPath + File.separator + fileName);
-            file.transferTo(newFile);
-            employee.setProfilePic(fileName);
-        }
-        employee.getCompany().setSize(employee.getCompany().getSize() + 1);
-        employeeRepo.save(employee);
+        employeeService.saveEmployees(employee, file);
         return "redirect:/employee";
     }
 
 
     @GetMapping("/employee")
-    public String employee(ModelMap modelMap) {
-        List<Employee> all = employeeRepo.findAll();
-        modelMap.addAttribute("employee", all);
+    public String employee(@RequestParam("page") Optional<Integer> page,
+                           @RequestParam("size") Optional<Integer> size,
+                           ModelMap modelMap) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+        Page<Employee> employeesPage = employeeService.findEmployeesWithPage(PageRequest.of(currentPage - 1, pageSize));
+        modelMap.addAttribute("employee", employeesPage);
+        int totalPages = employeesPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            modelMap.addAttribute("pageNumbers", pageNumbers);
+        }
         return "employee";
     }
 
     @GetMapping(value = "/employee/getImage", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getImage(@RequestParam("fileName") String fileName) throws IOException {
-        InputStream inputStream = new FileInputStream(folderPath + File.separator + fileName);
-        return IOUtils.toByteArray(inputStream);
+        return employeeService.getEmployeeImage(fileName);
     }
 
     @GetMapping("/employee/delete")
     public String delete(@RequestParam("byId") int id) {
-        Optional<Employee> empById = employeeRepo.findById(id);
-        if (empById.isPresent()) {
-            Employee employee = empById.get();
-            Optional<Company> byId = companyRepo.findById(employee.getCompany().getId());
-            if (byId.isPresent()) {
-                Company company = byId.get();
-                company.setSize(company.getSize() - 1);
-                companyRepo.save(company);
-            }
-        }
-        employeeRepo.deleteById(id);
+        employeeService.deleteById(id);
         return "redirect:/employee";
 
     }

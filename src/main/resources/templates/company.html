@@ -5,13 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-<th:block th:if="${cuurentUser != null && currentUser.role.name == 'ADMIN'}">
+<th:block th:if="${currentUser != null && currentUser.role.name == 'ADMIN'}">
     <a href="/add/company">Add company</a> |
 </th:block>
-<th:block th:if="${cuurentUser != null && currentUser.role.name == 'ADMIN'}">
+<th:block th:if="${currentUser != null && currentUser.role.name == 'ADMIN'}">
     <a href="/admin/home">Home</a>
 </th:block>
-<th:block th:if="${cuurentUser != null && currentUser.role.name == 'USER'}">
+<th:block th:if="${currentUser != null && currentUser.role.name == 'USER'}">
     <a href="/user/home">Home</a>
 </th:block>
 

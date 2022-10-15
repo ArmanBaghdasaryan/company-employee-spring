@@ -5,10 +5,10 @@
     <title>Add User</title>
 </head>
 <body>
-<th:block th:if="${currentUser.role.name == 'ADMIN'}">
+<th:block th:if="${currentUser != null && currentUser.role.name == 'ADMIN'}">
     <a href="/admin/home">Home</a>
 </th:block>
-<th:block th:if="${currentUser.role.name == 'USER'}">
+<th:block th:if="${currentUser != null && currentUser.role.name == 'USER'}">
     <a href="/user/home">Home</a>
 </th:block>
 <form action="/add/user" method="post" enctype="multipart/form-data">
