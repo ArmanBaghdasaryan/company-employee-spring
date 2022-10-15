@@ -73,5 +73,12 @@ public class UserController {
         return "redirect:/user";
     }
 
+    @GetMapping("/user/verify")
+    public String verifyUser(@RequestParam("email") String email,
+                             @RequestParam("token") String token) throws Exception {
+        userService.verifyUser(email, token);
+        return "redirect:/";
+    }
+
 
 }

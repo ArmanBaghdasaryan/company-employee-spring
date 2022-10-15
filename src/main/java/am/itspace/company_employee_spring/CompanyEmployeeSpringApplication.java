@@ -33,13 +33,13 @@ public class CompanyEmployeeSpringApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Optional<User> byEmail = userRepository.findByEmail("admin@gmail.com");
+        Optional<User> byEmail = userRepository.findByEmail("armangr2022@gmail.com");
 
         if (byEmail.isEmpty()) {
             userRepository.save(User.builder()
-                    .name("admin")
-                    .surname("admin")
-                    .email("admin@gmail.com")
+                    .name("Arman")
+                    .surname("Baghdasaryan")
+                    .email("armangr2022@gmail.com")
                     .password(passwordEncoder().encode("admin"))
                     .role(Role.ADMIN)
                     .build());

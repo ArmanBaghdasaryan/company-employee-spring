@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -45,16 +46,35 @@ public class UserService {
             file.transferTo(newFile);
             user.setPicture(fileName);
         }
+        user.setEnable(false);
+        user.setVerifyToken(UUID.randomUUID().toString());
         userRepository.save(user);
-        mailService.sendEmail(user.getEmail(), "Welcome", "Hi " + user.getName() + " \n" +
-                "You have successfully registered!");
-
+        mailService.sendEmail(user.getEmail(), "Please verify your email",
+                "Hi " + user.getName() + "\n" +
+                        "Please verify your account by clicking on this link " +
+                        "<a href=\"http://localhost:8080/user/verify?email=" + user.getEmail() + "&token=" + user.getVerifyToken() + "\"></a>"
+        );
     }
 
 
     public byte[] getUserImage(String fileName) throws IOException {
         InputStream inputStream = new FileInputStream(folderPath + File.separator + fileName);
         return IOUtils.toByteArray(inputStream);
+    }
+
+    public void verifyUser(String email, String token) throws Exception {
+        Optional<User> userOptional = userRepository.findByEmailAndVerifyToken(email, token);
+
+        if (userOptional.isEmpty()) {
+            throw new Exception("User Does not exists with email and token");
+        }
+        User user = userOptional.get();
+        if (user.isEnable()) {
+            throw new Exception("User already enabled");
+        }
+        user.setEnable(true);
+        user.setVerifyToken(null);
+        userRepository.save(user);
     }
 
     private User createUser(CreateUserDto dto) {
@@ -66,4 +86,5 @@ public class UserService {
                 .role(Role.USER)
                 .build();
     }
+
 }

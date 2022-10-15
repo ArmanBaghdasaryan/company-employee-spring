@@ -1,6 +1,7 @@
 package am.itspace.company_employee_spring.config;
 
 import am.itspace.company_employee_spring.entity.Role;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,13 +11,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UserDetailsService userDetailService;
+    private final PasswordEncoder passwordEncoder;
+    private final UserDetailsService userDetailService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
