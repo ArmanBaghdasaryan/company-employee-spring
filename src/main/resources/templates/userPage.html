@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <title>User Page</title>
 </head>
-<h1><span th:if="${currentUser != null}" th:text="Welcome + ${currentUser.name}"></span></h1>
+<h1><span th:if="${currentUser != null}" th:text="Welcome + ' ' + ${currentUser.name}"></span></h1>
 <body>
 <h1>
     <a href="/company">Show Companies</a> |
     <a href="/employee">Show Employees</a> |
-    <a href="/add/employee">Add Employees</a> |
-    <a href="/user">Show Users</a> |
+    <a href="/employee/add">Add Employee</a> |
     <div>
         <a href="/logout">Logout</a> |
     </div>

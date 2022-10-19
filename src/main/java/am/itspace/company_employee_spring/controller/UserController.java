@@ -10,33 +10,35 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
 
 
-    @GetMapping("/user/home")
+    @GetMapping("/home")
     public String userPage() {
         return "userPage";
     }
 
-    @GetMapping("/add/user")
+    @GetMapping("/add")
     public String addUser(ModelMap model) {
         List<User> users = userService.findAllUsers();
         model.addAttribute("users", users);
         return "addUser";
     }
 
-    @PostMapping("/add/user")
+    @PostMapping("/add")
     public String addUser(@ModelAttribute CreateUserDto user,
                           @RequestParam("profPic") MultipartFile file,
-                          ModelMap modelMap) throws IOException {
+                          ModelMap modelMap) throws IOException, MessagingException {
         Optional<User> byEmail = userService.findByEmail(user.getEmail());
         if (byEmail.isPresent()) {
             modelMap.addAttribute("msgEmail", "Email already in use");
@@ -53,27 +55,27 @@ public class UserController {
     }
 
 
-    @GetMapping("/user")
+    @GetMapping("")
     public String user(ModelMap modelMap) {
         List<User> all = userService.findAllUsers();
         modelMap.addAttribute("users", all);
         return "user";
     }
 
-    @GetMapping(value = "/user/getImage", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/getImage", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getImage(@RequestParam("fileName") String fileName) throws IOException {
         return userService.getUserImage(fileName);
     }
 
 
-    @GetMapping("/user/delete")
+    @GetMapping("/delete")
     public String delete(@RequestParam("byId") int id) {
 
         userService.deleteById(id);
         return "redirect:/user";
     }
 
-    @GetMapping("/user/verify")
+    @GetMapping("/verify")
     public String verifyUser(@RequestParam("email") String email,
                              @RequestParam("token") String token) throws Exception {
         userService.verifyUser(email, token);

@@ -33,14 +33,14 @@ public class EmployeeService {
 
     public void saveEmployees(CreateEmployeeDto dto, MultipartFile file) throws IOException {
         Employee employee = crateEmployee(dto);
-        if (!file.isEmpty() && file.getSize() > 0) {
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            File newFile = new File(folderPath + File.separator + fileName);
-            file.transferTo(newFile);
-            employee.setProfilePic(fileName);
-
-        }
+        checkedImage(file, employee);
         employee.getCompany().setSize(employee.getCompany().getSize() + 1);
+        employeeRepository.save(employee);
+    }
+
+
+    public void EmployeesEdit(Employee employee, MultipartFile file) throws IOException {
+        checkedImage(file, employee);
         employeeRepository.save(employee);
     }
 
@@ -72,6 +72,10 @@ public class EmployeeService {
         }
     }
 
+    public Optional<Employee> findEmployeesById(int id) {
+        return employeeRepository.findById(id);
+    }
+
     private Employee crateEmployee(CreateEmployeeDto dto) {
 
         return Employee.builder()
@@ -85,5 +89,16 @@ public class EmployeeService {
                 .company(dto.getCompany())
                 .build();
     }
+
+    private void checkedImage(MultipartFile file, Employee employee) throws IOException {
+        if (!file.isEmpty() && file.getSize() > 0) {
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            File newFile = new File(folderPath + File.separator + fileName);
+            file.transferTo(newFile);
+            employee.setProfilePic(fileName);
+
+        }
+    }
+
 
 }

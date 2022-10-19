@@ -6,7 +6,7 @@
 </head>
 <body>
 <th:block th:if="${currentUser != null && currentUser.role.name == 'ADMIN'}">
-    <a href="/add/user">Add User</a>
+    <a href="/user/add">Add User</a>
 </th:block>
 <th:block th:if="${currentUser != null && currentUser.role.name == 'ADMIN'}">
     <a href="/admin/home">Home</a>
@@ -24,7 +24,6 @@
         <th>email</th>
         <th>Role</th>
         <th>Remove</th>
-        <!--        <th>Edit</th>-->
     </tr>
 
     <tr th:each="user:${users}">
@@ -43,10 +42,6 @@
                 <a th:href="@{/user/delete(byId=${user.id})}">Remove</a>
             </td>
         </th:block>
-        <!--        <td>-->
-        <!--            <a th:href="@{/employee/edit(employeeId=${employees.id})}">Edit</a>-->
-        <!--        </td>-->
-
 
     </tr>
 </table>

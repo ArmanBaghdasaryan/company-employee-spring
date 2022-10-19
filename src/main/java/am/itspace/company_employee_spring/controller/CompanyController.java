@@ -10,30 +10,32 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/company")
 public class CompanyController {
 
-  private final CompanyService companyService;
-  private final EmployeeService employeeService;
+    private final CompanyService companyService;
+    private final EmployeeService employeeService;
 
-    @GetMapping("/add/company")
+    @GetMapping("/add")
     public String addCompany(ModelMap model) {
         List<Employee> employees = employeeService.findAllEmployees();
         model.addAttribute("employee", employees);
         return "addCompany";
     }
 
-    @PostMapping("/add/company")
+    @PostMapping("/add")
     public String addCompany(@ModelAttribute Company company) {
         companyService.saveCompanies(company);
         return "redirect:/company";
     }
 
-    @GetMapping("/company")
+    @GetMapping("")
     public String Companies(ModelMap modelMap) {
         List<Company> all = companyService.findAllCompanies();
         modelMap.addAttribute("companies", all);

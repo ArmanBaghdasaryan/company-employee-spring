@@ -22,20 +22,21 @@ import java.util.stream.IntStream;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/employee")
 public class EmployeeController {
 
 
     private final EmployeeService employeeService;
     private final CompanyService companyService;
 
-    @GetMapping("/add/employee")
+    @GetMapping("/add")
     public String addEmployee(ModelMap model) {
         List<Company> companies = companyService.findAllCompanies();
         model.addAttribute("companies", companies);
         return "addEmployee";
     }
 
-    @PostMapping("/add/employee")
+    @PostMapping("/add")
     public String addEmployee(@ModelAttribute CreateEmployeeDto employee,
                               @RequestParam("profPic") MultipartFile file) throws IOException {
         employeeService.saveEmployees(employee, file);
@@ -43,7 +44,7 @@ public class EmployeeController {
     }
 
 
-    @GetMapping("/employee")
+    @GetMapping("")
     public String employee(@RequestParam("page") Optional<Integer> page,
                            @RequestParam("size") Optional<Integer> size,
                            ModelMap modelMap) {
@@ -61,16 +62,37 @@ public class EmployeeController {
         return "employee";
     }
 
-    @GetMapping(value = "/employee/getImage", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/getImage", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getImage(@RequestParam("fileName") String fileName) throws IOException {
         return employeeService.getEmployeeImage(fileName);
     }
 
-    @GetMapping("/employee/delete")
-    public String delete(@RequestParam("byId") int id) {
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable int id) {
         employeeService.deleteById(id);
         return "redirect:/employee";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editEmployee(@PathVariable int id,
+                               ModelMap modelMap) {
+        Optional<Employee> employeeOptional = employeeService.findEmployeesById(id);
+        if (employeeOptional.isEmpty()) {
+            return "redirect:/admin/home";
+        }
+        modelMap.addAttribute("employee", employeeOptional.get());
+        List<Company> companies = companyService.findAllCompanies();
+        modelMap.addAttribute("companies", companies);
+        return "editEmployee";
 
     }
+
+    @PostMapping("/edit")
+    public String editEmployee(@ModelAttribute Employee employee,
+                               @RequestParam("profPic") MultipartFile file) throws IOException {
+        employeeService.EmployeesEdit(employee, file);
+        return "redirect:/employee";
+    }
+
 
 }

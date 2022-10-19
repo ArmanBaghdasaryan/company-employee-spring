@@ -6,7 +6,7 @@
 </head>
 <body>
 <th:block th:if="${currentUser != null && currentUser.role.name == 'ADMIN'}">
-    <a href="/add/company">Add company</a> |
+    <a href="/company/add">Add company</a> |
 </th:block>
 <th:block th:if="${currentUser != null && currentUser.role.name == 'ADMIN'}">
     <a href="/admin/home">Home</a>

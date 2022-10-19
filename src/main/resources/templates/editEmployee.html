@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head>
     <meta charset="UTF-8">
-    <title>Add Employee</title>
+    <title>Edit Employee</title>
 </head>
 <body>
 <th:block th:if="${currentUser.role.name == 'ADMIN'}">
@@ -12,14 +12,14 @@
     <a href="/user/home">Home</a>
 </th:block>
 
-<form action="/employee/add" method="post" enctype="multipart/form-data">
-
-    <input type="text" name="name" placeholder="please input name">
-    <input type="text" name="surname" placeholder="please input surname">
-    <input type="email" name="email" placeholder="please input email">
-    <input type="text" name="phoneNumber" placeholder="please input phone number">
-    <input type="number" name="salary" placeholder="please input salary">
-    <input type="text" name="position" placeholder="please input position"><br>
+<form action="/employee/edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="id" th:value="${employee.id}">
+    <input type="text" name="name" th:value="${employee.name}">
+    <input type="text" name="surname" th:value="${employee.surname}">
+    <input type="email" name="email" th:value="${employee.email}">
+    <input type="text" name="phoneNumber" th:value="${employee.phoneNumber}">
+    <input type="number" name="salary" th:value="${employee.salary}">
+    <input type="text" name="position" th:value="${employee.position}"><br>
     <label for="profPic">Employee Image</label>
     <input type="file" name="profPic" id="profPic" accept="image/*">
     <label>
@@ -27,7 +27,7 @@
             <option th:each="company: ${companies}" th:text="${company.name}" th:value="${company.id}"></option>
         </select>
     </label>
-    <input type="submit" value="add employee">
+    <input type="submit" value="edit">
 
 </form>
 

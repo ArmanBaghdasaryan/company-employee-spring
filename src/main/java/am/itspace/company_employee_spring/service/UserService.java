@@ -11,7 +11,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import javax.mail.MessagingException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,7 +42,7 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public void saveUser(CreateUserDto dto, MultipartFile file) throws IOException {
+    public void saveUser(CreateUserDto dto, MultipartFile file) throws IOException, MessagingException {
         User user = createUser(dto);
         if (!file.isEmpty() && file.getSize() > 0) {
             String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
@@ -49,10 +53,10 @@ public class UserService {
         user.setEnable(false);
         user.setVerifyToken(UUID.randomUUID().toString());
         userRepository.save(user);
-        mailService.sendEmail(user.getEmail(), "Please verify your email",
+        mailService.sendHtmlEmail(user.getEmail(), "Please verify your email",
                 "Hi " + user.getName() + "\n" +
                         "Please verify your account by clicking on this link " +
-                        "<a href=\"http://localhost:8080/user/verify?email=" + user.getEmail() + "&token=" + user.getVerifyToken() + "\"></a>"
+                        "<a href=\"http://localhost:8080/user/verify?email=" + user.getEmail() + "&token=" + user.getVerifyToken() + "\">Activate</a>"
         );
     }
 

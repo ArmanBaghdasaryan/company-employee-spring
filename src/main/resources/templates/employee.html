@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<a href="/add/employee">Add employee</a> |
+<a href="/employee/add">Add employee</a> |
 <th:block th:if="${currentUser.role.name == 'ADMIN'}">
     <a href="/admin/home">Home</a>
 </th:block>
@@ -24,7 +24,7 @@
         <th>position</th>
         <th>company</th>
         <th>Remove</th>
-        <!--        <th>Edit</th>-->
+        <th>Edit</th>
     </tr>
 
     <tr th:each="employees:${employee.content}">
@@ -42,11 +42,11 @@
         <td th:text="${employees.position}"></td>
         <td th:text="${employees.company.name}"></td>
         <td>
-            <a th:href="@{/employee/delete(byId=${employees.id})}">Remove</a>
+            <a th:href="@{'/employee/delete/' + ${employees.id}}">Remove</a>
         </td>
-        <!--        <td>-->
-        <!--            <a th:href="@{/employee/edit(employeeId=${employees.id})}">Edit</a>-->
-        <!--        </td>-->
+        <td>
+            <a th:href="@{'/employee/edit/' + ${employees.id}}">Edit</a>
+        </td>
 
 
     </tr>
