@@ -15,6 +15,5 @@ public class MyControllerAdvice {
             return currentUser.getUser();
         }
         return null;
-
     }
 }

@@ -68,13 +68,13 @@ public class EmployeeController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable int id) {
+    public String delete(@PathVariable("id") int id) {
         employeeService.deleteById(id);
         return "redirect:/employee";
     }
 
     @GetMapping("/edit/{id}")
-    public String editEmployee(@PathVariable int id,
+    public String editEmployee(@PathVariable("id") int id,
                                ModelMap modelMap) {
         Optional<Employee> employeeOptional = employeeService.findEmployeesById(id);
         if (employeeOptional.isEmpty()) {

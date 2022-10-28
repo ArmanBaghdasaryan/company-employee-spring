@@ -26,9 +26,7 @@ public class MainController {
             } else if (user.getRole() == Role.USER) {
                 return "redirect:/user/home";
             }
-
         }
-
         return "redirect:/";
     }
 

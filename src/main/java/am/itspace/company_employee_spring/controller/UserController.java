@@ -29,9 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/add")
-    public String addUser(ModelMap model) {
-        List<User> users = userService.findAllUsers();
-        model.addAttribute("users", users);
+    public String addUser() {
         return "addUser";
     }
 
@@ -70,7 +68,6 @@ public class UserController {
 
     @GetMapping("/delete")
     public String delete(@RequestParam("byId") int id) {
-
         userService.deleteById(id);
         return "redirect:/user";
     }
